@@ -1,0 +1,20 @@
+In Python you can create variables without declaring types.
+In Python you can use multiple assignment with tuple unpacking.
+In Python you can define functions with default parameter values.
+In Python you can use list comprehensions for concise filtering and mapping.
+In Python you can work with dictionaries for key-value data storage.
+In Python you can use loops with the else clause for handling edge cases.
+In Python you can create classes to organize code into objects.
+In Python you can use decorators to modify function behavior.
+In Python you can handle exceptions with try-except blocks.
+In Python you can import modules to extend functionality.
+In Python you can use lambda functions for short anonymous functions.
+In Python you can work with strings using f-strings for formatting.
+In Python you can create generators using the yield keyword.
+In Python you can use context managers with the with statement.
+In Python you can perform slicing on sequences like lists and strings.
+In Python you can use set operations for unique collections.
+In Python you can work with file I/O using built-in functions.
+In Python you can use type hints for better code documentation.
+In Python you can create virtual environments for project isolation.
+In Python you can use the map() and filter() functions for functional programming.
