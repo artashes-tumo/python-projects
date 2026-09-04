@@ -5,7 +5,7 @@ from typing import Dict, Tuple
 
 # Configuration
 
-Grades_File = Path("Grade Management/grades.json")
+Grades_File = Path("grades.json")
 
 if not Grades_File.exists():
     subjects = input("What subjects do you study? (Separate with commas) ").split(",")

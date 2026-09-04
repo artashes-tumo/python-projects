@@ -34,13 +34,13 @@ grades_data = load_grades()
 # =========================
 
 def get_final_grade(total: int):
-    if total >= 28: return 7, "#22ff88"   # vibrant green
+    if total >= 28: return 7, "#22ff88"
     if total >= 24: return 6, "#44ffaa"
-    if total >= 19: return 5, "#ffee33"   # bright yellow
+    if total >= 19: return 5, "#ffee33"
     if total >= 15: return 4, "#ffaa33"
     if total >= 10: return 3, "#ff7733"
     if total >= 6:  return 2, "#ff4444"
-    return 1, "#ff2266"                   # hot pink/red
+    return 1, "#ff2266"
 
 # =========================
 # MAIN APP
@@ -53,7 +53,6 @@ class GradeForgeApp:
         self.root.geometry("860x680")
         self.root.configure(bg="#0f0f1a")
 
-        # Custom fonts
         self.title_font = Font(family="Segoe UI", size=18, weight="bold")
         self.header_font = Font(family="Segoe UI", size=13, weight="bold")
         self.mono_font = Font(family="Consolas", size=11)
@@ -61,13 +60,16 @@ class GradeForgeApp:
         self.create_styles()
         self.create_ui()
 
+
+        if grades_data:
+            self.subject_var.set(list(grades_data.keys())[0])
+
         self.refresh_all()
 
     def create_styles(self):
         style = ttk.Style()
         style.theme_use('clam')
 
-        # Vibrant color palette
         style.configure("TFrame", background="#0f0f1a")
         style.configure("Card.TFrame", background="#1a1a2e", relief="flat")
 
@@ -75,15 +77,14 @@ class GradeForgeApp:
         style.configure("Header.TLabel", background="#0f0f1a", foreground="#a5b4fc", font=self.header_font)
         style.configure("Title.TLabel", background="#0f0f1a", foreground="#c4d0ff", font=self.title_font)
 
-        # Beautiful buttons
-        style.configure("Accent.TButton", 
+        style.configure("Accent.TButton",
                        font=("Segoe UI", 10, "bold"),
                        padding=10,
                        background="#6366f1")
         style.map("Accent.TButton",
                  background=[("active", "#818cf8"), ("pressed", "#4f46e5")])
 
-        style.configure("Danger.TButton", 
+        style.configure("Danger.TButton",
                        font=("Segoe UI", 10, "bold"),
                        padding=10,
                        background="#f43f5e")
@@ -93,64 +94,57 @@ class GradeForgeApp:
         style.configure("Success.TButton", background="#22d3ee", foreground="#0f172a")
 
     def create_ui(self):
-        # Main padding frame
         main = ttk.Frame(self.root, padding=25, style="TFrame")
         main.pack(fill=tk.BOTH, expand=True)
 
-        # Header with gradient feel
         header = ttk.Frame(main, style="TFrame")
         header.pack(fill=tk.X, pady=(0, 30))
 
         title = ttk.Label(header, text="GradeForge", style="Title.TLabel")
         title.pack(side=tk.LEFT)
 
-        subtitle = ttk.Label(header, text="  •  Advanced Grade Tracker", 
+        subtitle = ttk.Label(header, text="  •  Advanced Grade Tracker",
                            foreground="#64748b", font=("Segoe UI", 11))
         subtitle.pack(side=tk.LEFT, pady=6)
 
-        # Input Card
         input_card = ttk.Frame(main, style="Card.TFrame")
         input_card.pack(fill=tk.X, pady=12, ipadx=20, ipady=20)
 
         ttk.Label(input_card, text="Manage Grades", style="Header.TLabel").pack(anchor="w", padx=20, pady=(10,15))
 
-        # Input fields in a nice grid
         grid = ttk.Frame(input_card, style="Card.TFrame")
         grid.pack(padx=20, fill=tk.X)
 
-        # Row 1
         ttk.Label(grid, text="Subject").grid(row=0, column=0, sticky="w", pady=8, padx=(0,10))
         self.subject_var = tk.StringVar()
-        self.subject_combo = ttk.Combobox(grid, textvariable=self.subject_var, 
+        self.subject_combo = ttk.Combobox(grid, textvariable=self.subject_var,
                                         values=list(grades_data.keys()), state="readonly", width=22, font=("Segoe UI", 10))
         self.subject_combo.grid(row=0, column=1, sticky="ew", padx=5, pady=8)
 
-        ttk.Button(grid, text="+ New", command=self.add_new_subject, 
+        ttk.Button(grid, text="+ New", command=self.add_new_subject,
                   style="Accent.TButton", width=10).grid(row=0, column=2, padx=8)
 
-        # Row 2
         ttk.Label(grid, text="Criteria").grid(row=1, column=0, sticky="w", pady=8, padx=(0,10))
         self.criteria_var = tk.StringVar(value="A")
-        ttk.Combobox(grid, textvariable=self.criteria_var, values=["A","B","C","D"], 
+        ttk.Combobox(grid, textvariable=self.criteria_var, values=["A","B","C","D"],
                     state="readonly", width=8, font=("Segoe UI", 10)).grid(row=1, column=1, sticky="w", padx=5, pady=8)
 
-        # Row 3
         ttk.Label(grid, text="Grade (1-8)").grid(row=2, column=0, sticky="w", pady=8, padx=(0,10))
         self.grade_var = tk.StringVar()
         ttk.Entry(grid, textvariable=self.grade_var, width=12, font=("Segoe UI", 10)).grid(row=2, column=1, sticky="w", padx=5, pady=8)
 
-        # Action buttons
         btn_frame = ttk.Frame(input_card, style="Card.TFrame")
         btn_frame.pack(pady=18)
 
-        ttk.Button(btn_frame, text="Add Grade", command=self.add_grade, 
+        ttk.Button(btn_frame, text="Add Grade", command=self.add_grade,
                   style="Accent.TButton").pack(side=tk.LEFT, padx=6)
-        ttk.Button(btn_frame, text="Reset", command=self.reset_subject, 
+        ttk.Button(btn_frame, text="Reset", command=self.reset_subject,
                   style="Danger.TButton").pack(side=tk.LEFT, padx=6)
-        ttk.Button(btn_frame, text="Delete Subject", command=self.delete_subject, 
+        ttk.Button(btn_frame, text="Delete Subject", command=self.delete_subject,
                   style="Danger.TButton").pack(side=tk.LEFT, padx=6)
+        ttk.Button(btn_frame, text="Refresh", command=self.refresh_all,
+                  style="Success.TButton").pack(side=tk.LEFT, padx=6)
 
-        # Advisor Section
         advisor_card = ttk.Frame(main, style="Card.TFrame")
         advisor_card.pack(fill=tk.X, pady=12, ipadx=20, ipady=15)
 
@@ -158,20 +152,19 @@ class GradeForgeApp:
         advisor_top.pack(fill=tk.X, padx=20, pady=10)
 
         ttk.Label(advisor_top, text="Smart Advisor", style="Header.TLabel").pack(side=tk.LEFT)
-        
+
         ttk.Label(advisor_top, text="Target:").pack(side=tk.LEFT, padx=(30,5))
         self.target_var = tk.StringVar(value="7")
-        ttk.Combobox(advisor_top, textvariable=self.target_var, values=["7","6","5","4","3","2","1"], 
+        ttk.Combobox(advisor_top, textvariable=self.target_var, values=["7","6","5","4","3","2","1"],
                     width=5, state="readonly").pack(side=tk.LEFT)
 
-        ttk.Button(advisor_top, text="Get Advice", command=self.show_advisor, 
+        ttk.Button(advisor_top, text="Get Advice", command=self.show_advisor,
                   style="Accent.TButton").pack(side=tk.RIGHT)
 
-        # Output Area - Beautiful Text Widget
         output_card = ttk.Frame(main, style="Card.TFrame")
         output_card.pack(fill=tk.BOTH, expand=True, pady=12, ipadx=15, ipady=15)
 
-        self.output = tk.Text(output_card, bg="#16162a", fg="#e0e0ff", 
+        self.output = tk.Text(output_card, bg="#16162a", fg="#e0e0ff",
                              font=self.mono_font, relief="flat", padx=18, pady=18,
                              wrap=tk.WORD, height=18, borderwidth=0, highlightthickness=0)
         scrollbar = ttk.Scrollbar(output_card, orient="vertical", command=self.output.yview)
@@ -180,37 +173,42 @@ class GradeForgeApp:
         self.output.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-        # Bottom bar
         bottom = ttk.Frame(main, style="TFrame")
         bottom.pack(fill=tk.X, pady=(15,0))
 
-        ttk.Button(bottom, text="Refresh", command=self.refresh_all, 
+        ttk.Button(bottom, text="Refresh", command=self.refresh_all,
                   style="Accent.TButton").pack(side=tk.LEFT)
-        ttk.Button(bottom, text="Distribution", command=self.show_distribution, 
+        ttk.Button(bottom, text="Distribution", command=self.show_distribution,
                   style="Accent.TButton").pack(side=tk.LEFT, padx=12)
-        ttk.Button(bottom, text="Exit", command=self.on_close, 
+        ttk.Button(bottom, text="Exit", command=self.on_close,
                   style="Danger.TButton").pack(side=tk.RIGHT)
 
-        # Initial combo update
         self.subject_combo['values'] = list(grades_data.keys())
 
     def add_new_subject(self):
         name = simpledialog.askstring("New Subject", "Subject name:", parent=self.root)
-        if name and (name := name.strip().lower()):
-            if name not in grades_data:
-                grades_data[name] = {"A": 0, "B": 0, "C": 0, "D": 0}
-                save_grades(grades_data)
-                self.subject_combo['values'] = list(grades_data.keys())
-                self.subject_var.set(name)
-                messagebox.showinfo("Added", f"New subject '{name.capitalize()}' created!")
-                self.refresh_all()
+        if not name:
+            return
+        name = name.strip()
+        if not name:
+            return
+        if name in grades_data:
+            messagebox.showwarning("Duplicate", f"Subject '{name}' already exists.")
+            return
+        grades_data[name] = {"A": 0, "B": 0, "C": 0, "D": 0}
+        save_grades(grades_data)
+        self.subject_combo['values'] = list(grades_data.keys())
+        self.subject_var.set(name)
+        messagebox.showinfo("Added", f"New subject '{name}' created!")
+        self.refresh_all()
 
     def add_grade(self):
-        subject = self.subject_var.get().strip().lower()
+        subject = self.subject_var.get().strip()
         criteria = self.criteria_var.get()
+
         try:
             grade = int(self.grade_var.get().strip())
-        except:
+        except ValueError:
             messagebox.showerror("Error", "Please enter a valid grade (1-8)")
             return
 
@@ -226,40 +224,47 @@ class GradeForgeApp:
 
         grades_data[subject][criteria] = grade
         save_grades(grades_data)
-        messagebox.showinfo("Success", f"Added {grade} to {subject.capitalize()} - {criteria}")
+        messagebox.showinfo("Success", f"Added {grade} to {subject} — Criteria {criteria}")
         self.refresh_all()
 
     def reset_subject(self):
-        subject = self.subject_var.get().strip().lower()
-        if subject and subject in grades_data:
-            if messagebox.askyesno("Reset", f"Reset all grades for {subject.capitalize()}?"):
-                grades_data[subject] = {"A": 0, "B": 0, "C": 0, "D": 0}
-                save_grades(grades_data)
-                self.refresh_all()
+        subject = self.subject_var.get().strip()
+        if not subject or subject not in grades_data:
+            messagebox.showerror("Error", "Please select a subject first")
+            return
+        if messagebox.askyesno("Reset", f"Reset all grades for {subject}?"):
+            grades_data[subject] = {"A": 0, "B": 0, "C": 0, "D": 0}
+            save_grades(grades_data)
+            self.refresh_all()
 
     def delete_subject(self):
-        subject = self.subject_var.get().strip().lower()
-        if subject and subject in grades_data:
-            if messagebox.askyesno("Delete", f"Delete subject '{subject.capitalize()}' permanently?", icon="warning"):
-                del grades_data[subject]
-                save_grades(grades_data)
-                self.subject_combo['values'] = list(grades_data.keys())
-                if grades_data:
-                    self.subject_var.set(list(grades_data.keys())[0])
-                self.refresh_all()
+        # BUG FIX: removed .lower()
+        subject = self.subject_var.get().strip()
+        if not subject or subject not in grades_data:
+            messagebox.showerror("Error", "Please select a subject first")
+            return
+        if messagebox.askyesno("Delete", f"Delete subject '{subject}' permanently?", icon="warning"):
+            del grades_data[subject]
+            save_grades(grades_data)
+            self.subject_combo['values'] = list(grades_data.keys())
+            if grades_data:
+                self.subject_var.set(list(grades_data.keys())[0])
+            else:
+                self.subject_var.set("")
+            self.refresh_all()
 
     def show_advisor(self):
-        subject = self.subject_var.get().strip().lower()
+        subject = self.subject_var.get().strip()
         if not subject or subject not in grades_data:
             messagebox.showerror("Error", "Select a subject first")
             return
 
         try:
             target = int(self.target_var.get())
-        except:
+        except ValueError:
             return
 
-        boundaries = {7:28, 6:24, 5:19, 4:15, 3:10, 2:6, 1:4}
+        boundaries = {7: 28, 6: 24, 5: 19, 4: 15, 3: 10, 2: 6, 1: 4}
         grades = grades_data[subject]
         current = sum(v for v in grades.values() if v > 0)
         missing = sum(1 for v in grades.values() if v == 0)
@@ -267,18 +272,20 @@ class GradeForgeApp:
 
         self.output.delete("1.0", tk.END)
         self.output.insert(tk.END, f"SMART ADVISOR — {subject.upper()}\n\n", "title")
-        self.output.insert(tk.END, f"Target Grade: {target}\n")
-        self.output.insert(tk.END, f"Current Points: {current}\n")
-        self.output.insert(tk.END, f"Needed Points: {needed}\n")
-        self.output.insert(tk.END, f"Remaining Tests: {missing}\n\n")
+        self.output.insert(tk.END, f"Target Grade:      {target}\n")
+        self.output.insert(tk.END, f"Current Points:    {current}\n")
+        self.output.insert(tk.END, f"Points Still Needed: {needed}\n")
+        self.output.insert(tk.END, f"Remaining Tests:   {missing}\n\n")
 
         if needed == 0:
             self.output.insert(tk.END, "EXCELLENT! Target already achieved ✨\n", "success")
         elif missing == 0:
-            self.output.insert(tk.END, "Not enough tests left to reach target.\n", "danger")
+            self.output.insert(tk.END, "Not enough tests remaining to reach target.\n", "danger")
         else:
-            avg = (needed + missing - 1) // missing
-            self.output.insert(tk.END, f"Average required per remaining test: {avg}\n", "accent")
+            avg = -(-needed // missing)  # ceiling division
+            self.output.insert(tk.END, f"Average score needed per remaining test: {avg}\n", "accent")
+            if avg > 8:
+                self.output.insert(tk.END, "⚠ Target is out of reach with current scores.\n", "danger")
 
         self.apply_output_tags()
 
@@ -293,8 +300,7 @@ class GradeForgeApp:
                 if v != 0:
                     dist[str(v)] += 1
 
-        colors = ["#22ff88", "#44ffaa", "#ffee33", "#ffaa33", "#ff7733", "#ff4444", "#ff2266", "#cc11aa"]
-        for i, (g, count) in enumerate(dist.items(), 1):
+        for g, count in dist.items():
             bar = "█" * min(count * 2, 25)
             self.output.insert(tk.END, f"Grade {g}  ", "label")
             self.output.insert(tk.END, f"{bar}  ({count})\n", "bar")
@@ -326,17 +332,18 @@ class GradeForgeApp:
         self.apply_output_tags()
 
     def apply_output_tags(self):
-        self.output.tag_config("title", font=("Segoe UI", 14, "bold"), foreground="#c4d0ff")
+        self.output.tag_config("title",   font=("Segoe UI", 14, "bold"), foreground="#c4d0ff")
         self.output.tag_config("subject", font=("Segoe UI", 12, "bold"), foreground="#a5b4fc")
-        self.output.tag_config("final", font=("Segoe UI", 12, "bold"), foreground="#67e8f9")
+        self.output.tag_config("final",   font=("Segoe UI", 12, "bold"), foreground="#67e8f9")
         self.output.tag_config("success", foreground="#67e8f9")
-        self.output.tag_config("accent", foreground="#818cf8")
-        self.output.tag_config("danger", foreground="#fb7185")
-        self.output.tag_config("info", foreground="#94a3b8")
-        self.output.tag_config("bar", foreground="#67e8f9")
+        self.output.tag_config("accent",  foreground="#818cf8")
+        self.output.tag_config("danger",  foreground="#fb7185")
+        self.output.tag_config("info",    foreground="#94a3b8")
+        self.output.tag_config("bar",     foreground="#67e8f9")
+        self.output.tag_config("label",   foreground="#a5b4fc")
 
     def on_close(self):
-        if messagebox.askokcancel("Exit GradeForge", "Save all changes before exiting?"):
+        if messagebox.askokcancel("Exit GradeForge", "Exit GradeForge?"):
             save_grades(grades_data)
             self.root.destroy()
 
